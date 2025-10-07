@@ -1,5 +1,5 @@
 float rotY = 0;
-int numNebulaSpheres = 10;  // TODO: Cahange this later - GOD how many TODOs havw I gotttt i don't need this fkn many bro
+int numNebulaSpheres = 10;  // Change this later
 float nebulaX = 100, nebulaY = 200, nebulaZ = 100;  // half sizes of the nebula in each dimension - maybee change this later to make the nebulas less boxy if needed but it works for now - as in use a radius instead
 
 // store pos, size, and colours for each nebula sphere
@@ -8,6 +8,9 @@ float[] sizes = new float[numNebulaSpheres];
 color[] colours = new color[numNebulaSpheres];
 
 float overlapFactor = 0.5;  // 0 = no overlap, 1 = can fully overlap  // TODO: Change - againnnnnnnnnnnn - not another changeeeeeee
+
+float nebulaPulseScale = 0.13;
+float nebulaPulseSpeed = 0.03;  // Change both these later
 
 void setup() {
   size(600, 600, P3D);
@@ -52,7 +55,10 @@ void draw() {
     pushMatrix();
       translate(positions[i].x, positions[i].y, positions[i].z);
       fill(colours[i]);
-      sphere(sizes[i]);
+      
+      // gives the nebula some life instead of being static - uses a sine wave to smoothly oscillate the size of each sphere
+      float nebulaPulse = 1 + nebulaPulseScale * sin(frameCount * nebulaPulseSpeed + i);  // +i just starts each sphere at a diff point on the sine wave so they oscillate not in sync
+      sphere(sizes[i] * nebulaPulse);
     popMatrix();
   }
 }
