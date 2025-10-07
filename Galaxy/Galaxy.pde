@@ -1,16 +1,17 @@
 float rotY = 0;
 int numNebulaSpheres = 10;  // Change this later
-float nebulaX = 100, nebulaY = 200, nebulaZ = 100;  // half sizes of the nebula in each dimension - maybee change this later to make the nebulas less boxy if needed but it works for now - as in use a radius instead
+float nebulaX = 100, nebulaY = 200, nebulaZ = 100;  // half sizes of the nebula in each dimension
 
 // store pos, size, and colours for each nebula sphere
 PVector[] positions = new PVector[numNebulaSpheres];
 float[] sizes = new float[numNebulaSpheres];
 color[] colours = new color[numNebulaSpheres];
 
-float overlapFactor = 0.5;  // 0 = no overlap, 1 = can fully overlap  // TODO: Change - againnnnnnnnnnnn - not another changeeeeeee
+float overlapFactor = 0.5;  // 0 = no overlap, 1 = can fully overlap - change later
+float centerBiasPower = 3;   // >1 = denser centre, 1 = no bias - change later
 
 float nebulaPulseScale = 0.13;
-float nebulaPulseSpeed = 0.03;  // Change both these later
+float nebulaPulseSpeed = 0.02;  // Change both these later
 
 void setup() {
   size(600, 600, P3D);
@@ -72,11 +73,11 @@ PVector placeNebulaSphere(int i) {
   PVector p;
   int tries = 0;
   while (true) {
-    // random point
+    // random point - now biased towards the centre
     p = new PVector(
-      random(-nebulaX, nebulaX),  // width
-      random(-nebulaY, nebulaY),  // height
-      random(-nebulaZ, nebulaZ)   // depth
+      biasedRandomPos(nebulaX, centerBiasPower),  // width
+      biasedRandomPos(nebulaY, centerBiasPower),  // height
+      biasedRandomPos(nebulaZ, centerBiasPower)   // depth
     );
 
     boolean ok = true;
@@ -93,4 +94,15 @@ PVector placeNebulaSphere(int i) {
     // also I haven't f'ed this up - if the spheres are too big or the space where the point is generated is too small there has to be some overlap, it would be impossible to have none - that's also why thats there
   }
   return p;
+}
+
+float biasedRandomPos(float nebulaSize, float power) {
+  // bias random position towards 0
+  float r = random(-1, 1);
+  float sign = 1;
+  if (r < 0) {
+    sign = -1;
+  }  
+  float mag = pow(abs(r), power); // power>1 compresses toward 0
+  return sign * mag * nebulaSize;
 }
