@@ -12,11 +12,13 @@ float centerBiasPower = 3;   // >1 = denser centre, 1 = no bias - change later
 
 float nebulaPulseScale = 0.13;
 float nebulaPulseSpeed = 0.02;  // Change both these later
+float baseHue = 260;
 
 void setup() {
   size(600, 600, P3D);
   windowMove(1300, 170);  // TODO: Delete later - just so I don't have to keep moving the window to where i want it
   noStroke();
+  colorMode(HSB, 360, 100, 100, 100);
   sphereDetail(30);  // This is the auto detail anyway but might want to decrease if i add lots of spheres
   
   // create random sizes for the spheres
@@ -26,17 +28,18 @@ void setup() {
 
   // place positions with brute force rejection 
   // TODO: consider Poisson-Disc Sampling or Algorithm for Radius Determination  - idk yet tho
-  // TODO: also add centre bias later to get rid of any weird gaps in the middle
   for (int i = 0; i < numNebulaSpheres; i++) {
     positions[i] = placeNebulaSphere(i);
   }
 
     for (int i = 0; i < numNebulaSpheres; i++) {
+      float hueOffset = map(positions[i].y, -nebulaY, nebulaY, -30, 30);  // maps position to a hue offset to create gradient effect
+      float hue = random(baseHue-10, baseHue+10) + hueOffset;  // a little bit of randomness to make it look more interesting
       colours[i] = color(
-        random(120, 200),  // red
-        random(80, 150),   // green
-        random(180, 255),  // blue
-        random(40, 70)     // transparency
+        hue,
+        100,               // saturation
+        85,                // brightness
+        random(30, 60)     // transparency
         // TODO: Change these later
         // TODO: also I think I saw something about gradients on that processing page - try that later - wait there was other shit too - look at that shit again
       );
